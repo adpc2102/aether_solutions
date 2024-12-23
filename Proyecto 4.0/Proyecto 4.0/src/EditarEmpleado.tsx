@@ -1,11 +1,20 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import './EditarEmpleado.css'
 
 function EditarEmpleado() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [cedula, setCedula] = useState<string>('');
+
 
   const toggleMenu = (menu: string) => {
     setOpenMenu(openMenu === menu ? null : menu); // Si ya está abierto, lo cerramos; si no, lo abrimos
+  };
+  const validarCedula= (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    // Reemplazamos cualquier caracter que no sea un número
+    const onlyNumbers = value.replace(/[^0-9]/g, '');
+    setCedula(onlyNumbers); // Actualizamos el estado solo con números
   };
 
   return (
@@ -42,6 +51,25 @@ function EditarEmpleado() {
           </ul>
         </nav>
       </header>
+      <div className='form-container' >
+        <h2 className='titulo'>Escriba la cédula del empleado</h2>
+          <form id= "busquedaCedula" action="#">
+            <div className='input'>
+              <label htmlFor="name">Cédula</label>
+              <input type="text"
+              id="id"
+              name="id"
+              placeholder="Ingresar cédula..."
+              value={cedula}
+              onChange={validarCedula} // Maneja el cambio en el campo
+              pattern="^\d+$"
+              title="Solo números"
+              required >
+              </input>
+            </div>
+            <button type="submit" className="btn-submit">Buscar</button>
+          </form>
+      </div>
     </div>
   );
 }
