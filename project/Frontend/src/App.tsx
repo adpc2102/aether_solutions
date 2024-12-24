@@ -34,11 +34,11 @@ function App() {
           {/* Menú de Departamentos */}
           <li className={`menu-item ${openMenu === 'departamentos' ? 'open' : ''}`}>
             <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
-            {openMenu === 'departamentos' && (
+              {openMenu === 'departamentos' && (
               <ul className="sub_menu_departamentos">
                 <li><Link to="#">Información</Link></li>
                 <li><a href="#">Editar Departamento</a></li>
-                <li><a href="#">Agregar Departamento</a></li>
+                <li><Link to="/cd">Crear Departamento</Link></li>
                 
               </ul>
             )}

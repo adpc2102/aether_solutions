@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './EditarEmpleado.css';
+import './EditarEmpleado';
 
 const CrearEmpleado: React.FC = () => {
   const [cedula, setCedula] = useState('');
@@ -9,13 +9,23 @@ const CrearEmpleado: React.FC = () => {
   const [lastname, setLastname] = useState('');
   const [dept, setDept] = useState('');
   const [cargo, setCargo] = useState('');
+  const [departments, setDepartments] = useState<any[]>([]); // Para almacenar los departamentos
   const [errorMessage, setErrorMessage] = useState('');
-  const [openMenu, setOpenMenu] = useState<string | null>(null); // Mover esta línea aquí
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  // Función para alternar el menú
-  const toggleMenu = (menu: string) => {
-    setOpenMenu(openMenu === menu ? null : menu); // Si ya está abierto, lo cerramos; si no, lo abrimos
-  };
+  useEffect(() => {
+    // Cargar los departamentos de la API al montar el componente
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/api/departments');
+        setDepartments(response.data);
+      } catch (error) {
+        setErrorMessage('Error al cargar los departamentos');
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,8 +41,8 @@ const CrearEmpleado: React.FC = () => {
       const response = await axios.post('http://127.0.0.1:5000/api/employees', {
         cedula: cedula,
         name: name,
-        lastname : lastname,
-        dept : dept,
+        lastname: lastname,
+        departamento: dept,
         cargo: cargo,
       });
 
@@ -48,20 +58,17 @@ const CrearEmpleado: React.FC = () => {
         setErrorMessage('Error al crear el empleado.');
       }
     } catch (error: unknown) {
-        // Verificar si el error es un AxiosError y si tiene la respuesta
-        if (axios.isAxiosError(error)) {
-          if (error.response && error.response.data.message) {
-            // Mostrar el mensaje de la API, por ejemplo, "La cédula ya está registrada"
-            setErrorMessage(error.response.data.message);
-          } else {
-            setErrorMessage('Error de conexión con la API.');
-          }
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.data.message) {
+          setErrorMessage(error.response.data.message);
         } else {
-          setErrorMessage('Error desconocido.');
+          setErrorMessage('Error de conexión con la API.');
         }
+      } else {
+        setErrorMessage('Error desconocido.');
       }
-
     }
+  };
 
   return (
     <div>
@@ -70,27 +77,26 @@ const CrearEmpleado: React.FC = () => {
           <div className="logo">Gestión de Departamentos y Empleados</div>
           <ul className="menu">
             <li><Link to="/">Inicio</Link></li>
-
             {/* Menú de Empleados */}
             <li className={`menu-item ${openMenu === 'empleados' ? 'open' : ''}`}>
-              <a href="#" onClick={() => toggleMenu('empleados')}>Empleados</a>
+              <a href="#" onClick={() => setOpenMenu(openMenu === 'empleados' ? null : 'empleados')}>Empleados</a>
               {openMenu === 'empleados' && (
                 <ul className="sub_menu_empleados">
-                    <li><Link to="#">Información</Link></li>
-                    <li><Link to="/ee">Editar Empleado</Link></li>
-                    <li><Link to="/ae">Agregar Empleado</Link></li>
+                  <li><Link to="#">Información</Link></li>
+                  <li><Link to="/ee">Editar Empleado</Link></li>
+                  <li><Link to="/ae">Agregar Empleado</Link></li>
                 </ul>
               )}
             </li>
 
             {/* Menú de Departamentos */}
             <li className={`menu-item ${openMenu === 'departamentos' ? 'open' : ''}`}>
-              <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
+              <a href="#" onClick={() => setOpenMenu(openMenu === 'departamentos' ? null : 'departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
-                    <li><Link to="#">Información</Link></li>
-                    <li><Link to="#">Editar Departamento</Link></li>
-                    <li><Link to="#">Agregar Departamento</Link></li>
+                  <li><Link to="#">Información</Link></li>
+                  <li><Link to="#">Editar Departamento</Link></li>
+                  <li><Link to="/cd">Crear Departamento</Link></li>
                 </ul>
               )}
             </li>
@@ -98,14 +104,14 @@ const CrearEmpleado: React.FC = () => {
         </nav>
       </header>
       <div className="form-container">
-        <h2 className="titulo">Usuario Nuevo</h2>
-        <form id="busquedaCedula" onSubmit={handleSubmit}>
+        <h2 className="titulo">Crear Empleado</h2>
+        <form id="crearEmpleado" onSubmit={handleSubmit}>
           <div className="input">
-            <label htmlFor="id">Cédula</label>
+            <label htmlFor="cedula">Cédula</label>
             <input
               type="text"
-              id="id"
-              name="id"
+              id="cedula"
+              name="cedula"
               placeholder="Ingresar cédula..."
               value={cedula}
               onChange={(e) => setCedula(e.target.value)}
@@ -140,15 +146,20 @@ const CrearEmpleado: React.FC = () => {
           </div>
           <div className="input">
             <label htmlFor="dept">Departamento</label>
-            <input
-              type="text"
+            <select
               id="dept"
               name="dept"
-              placeholder="Ingrese su Departamento..."
               value={dept}
               onChange={(e) => setDept(e.target.value)}
               required
-            />
+            >
+              <option value="">Seleccionar un departamento</option>
+              {departments.map(department => (
+                <option key={department.id} value={department.name}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="input">
             <label htmlFor="cargo">Cargo</label>
@@ -156,7 +167,7 @@ const CrearEmpleado: React.FC = () => {
               type="text"
               id="cargo"
               name="cargo"
-              placeholder="Ingrese su cargo en el departamento..."
+              placeholder="Ingrese su cargo..."
               value={cargo}
               onChange={(e) => setCargo(e.target.value)}
               required
@@ -171,4 +182,5 @@ const CrearEmpleado: React.FC = () => {
 };
 
 export default CrearEmpleado;
+
 

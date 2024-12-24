@@ -97,7 +97,7 @@ function EditarEmpleado() {
                 <ul className="sub_menu_departamentos">
                   <li><Link to="#">Información</Link></li>
                   <li><Link to="#">Editar Departamento</Link></li>
-                  <li><Link to="#">Agregar Departamento</Link></li>
+                  <li><Link to="/cd">Crear Departamento</Link></li>
                   
                 </ul>
               )}
