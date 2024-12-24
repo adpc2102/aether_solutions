@@ -59,7 +59,44 @@ def create_employee():
     # Insertar el nuevo empleado en la colección "employee"
     employee_collection.insert_one(new_employee)
     
-    return jsonify({"message": "Employee created successfully!"}), 201
+    return jsonify({"message": "Empleado creado con exito"}), 201
+
+@app.route('/api/employees/<cedula>',methods = ['GET'])
+def buscar_cedula(cedula):
+    employee = employee_collection.find_one({"cedula": cedula})
+    if employee:
+        return jsonify({
+            "name": employee["name"],
+            "lastname": employee["lastname"],
+            "cedula": employee["cedula"],
+            "departamento": employee["departamento"],
+            "cargo": employee["cargo"]
+        }), 200
+    else:
+        return jsonify({"message": "Empleado no encontrado"}), 404
+
+#actualizar los datos con la cedula de parametro
+
+@app.route('/api/employees/<cedula>', methods=['PUT'])
+def actualizar_empleado(cedula):
+    employee = employee_collection.find_one({"cedula": cedula})
+    if employee:
+        # Obtener los datos que se deben actualizar
+        updated_data = request.get_json()
+
+        # Actualizar los datos en la base de datos
+        result = employee_collection.update_one(
+            {"cedula": cedula},
+            {"$set": updated_data}
+        )
+
+        if result.modified_count > 0:
+            return jsonify({"message": "Empleado actualizado exitosamente."}), 200
+        else:
+            return jsonify({"message": "No se realizaron cambios."}), 200
+    else:
+        return jsonify({"message": "Empleado no encontrado."}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)

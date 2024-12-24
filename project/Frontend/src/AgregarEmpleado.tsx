@@ -76,9 +76,9 @@ const CrearEmpleado: React.FC = () => {
               <a href="#" onClick={() => toggleMenu('empleados')}>Empleados</a>
               {openMenu === 'empleados' && (
                 <ul className="sub_menu_empleados">
-                  <li><Link to="/ee">Editar Empleado</Link></li>
-                  <li><Link to="/ae">Agregar Empleado</Link></li>
-                  <li><Link to="#">Todos los Empleados</Link></li>
+                    <li><Link to="#">Información</Link></li>
+                    <li><Link to="/ee">Editar Empleado</Link></li>
+                    <li><Link to="/ae">Agregar Empleado</Link></li>
                 </ul>
               )}
             </li>
@@ -88,9 +88,9 @@ const CrearEmpleado: React.FC = () => {
               <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
-                  <li><Link to="#">Editar Departamento</Link></li>
-                  <li><Link to="#">Agregar Departamento</Link></li>
-                  <li><Link to="#">Todos los Departamentos</Link></li>
+                    <li><Link to="#">Información</Link></li>
+                    <li><Link to="#">Editar Departamento</Link></li>
+                    <li><Link to="#">Agregar Departamento</Link></li>
                 </ul>
               )}
             </li>
