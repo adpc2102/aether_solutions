@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
       "outDir": "./dist",
-      "strict": true,
+      "strict": false,
+      "noImplicitAny": false,
       "jsx": "react"
     },
     "include": [
