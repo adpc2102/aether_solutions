@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './EditarEmpleado';
+import './EditarEmpleado.css';
 
 const CrearEmpleado: React.FC = () => {
   const [cedula, setCedula] = useState('');
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
   const [dept, setDept] = useState('');
-  const [cargo, setCargo] = useState('');
   const [departments, setDepartments] = useState<any[]>([]); // Para almacenar los departamentos
+  const [employees, setEmployees] = useState<any[]>([]); // Para almacenar los empleados
+  const [hasSuperior, setHasSuperior] = useState(false); // Para saber si el empleado tiene supervisor
   const [errorMessage, setErrorMessage] = useState('');
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
@@ -24,17 +25,54 @@ const CrearEmpleado: React.FC = () => {
       }
     };
 
+    // Cargar los empleados de la API al montar el componente
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/api/employees');
+        console.log(response.data);  // Imprime la respuesta de la API
+        setEmployees(response.data);
+      } catch (error) {
+        setErrorMessage('Error al cargar los empleados');
+      }
+    };
+
     fetchDepartments();
+    fetchEmployees();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validación de campos
-    if (!cedula || !name || !lastname || !dept || !cargo) {
+    if (!cedula || !name || !lastname || !dept ) {
       setErrorMessage('Todos los campos son obligatorios.');
       return;
     }
+
+    // Verificar si el departamento ya tiene un supervisor
+    const checkSupervisorInDepartment = async (departmentName: string) => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:5000/api/departments/${departmentName}/supervisor`);
+        return response.data.hasSupervisor;  // Devuelve true o false
+      } catch (error) {
+        setErrorMessage('Error al verificar el supervisor en el departamento.');
+        return false; // Si ocurre un error, devolvemos false por defecto
+      }
+    };
+
+    let superior = null;
+
+    if (hasSuperior) {
+      const hasSupervisor = await checkSupervisorInDepartment(dept);
+      if (hasSupervisor) {
+        setErrorMessage(`El departamento de ${dept} ya tiene un supervisor asignado.`);
+        return;
+      } else {
+        // Si no hay supervisor, asignamos al nuevo empleado como supervisor
+        superior = cedula;
+      }
+    }
+    
 
     try {
       // Enviar los datos a la API de Flask
@@ -43,7 +81,7 @@ const CrearEmpleado: React.FC = () => {
         name: name,
         lastname: lastname,
         departamento: dept,
-        cargo: cargo,
+        is_supervisor: hasSuperior, // Si no tiene supervisor, se asigna null
       });
 
       if (response.status === 201) {
@@ -53,7 +91,7 @@ const CrearEmpleado: React.FC = () => {
         setName('');
         setLastname('');
         setDept('');
-        setCargo('');
+        setHasSuperior(false);
       } else {
         setErrorMessage('Error al crear el empleado.');
       }
@@ -82,7 +120,7 @@ const CrearEmpleado: React.FC = () => {
               <a href="#" onClick={() => setOpenMenu(openMenu === 'empleados' ? null : 'empleados')}>Empleados</a>
               {openMenu === 'empleados' && (
                 <ul className="sub_menu_empleados">
-                  <li><Link to="#">Información</Link></li>
+                  <li><Link to="/ie">Información</Link></li>
                   <li><Link to="/ee">Editar Empleado</Link></li>
                   <li><Link to="/ae">Agregar Empleado</Link></li>
                 </ul>
@@ -94,8 +132,8 @@ const CrearEmpleado: React.FC = () => {
               <a href="#" onClick={() => setOpenMenu(openMenu === 'departamentos' ? null : 'departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
-                  <li><Link to="#">Información</Link></li>
-                  <li><Link to="#">Editar Departamento</Link></li>
+                  <li><Link to="/id">Información</Link></li>
+                  <li><Link to="/ed">Editar Departamento</Link></li>
                   <li><Link to="/cd">Crear Departamento</Link></li>
                 </ul>
               )}
@@ -161,16 +199,15 @@ const CrearEmpleado: React.FC = () => {
               ))}
             </select>
           </div>
+          {/* Casilla para verificar si tiene supervisor */}
           <div className="input">
-            <label htmlFor="cargo">Cargo</label>
+            <label htmlFor="hasSuperior">¿Es Jefe de Area?</label>
             <input
-              type="text"
-              id="cargo"
-              name="cargo"
-              placeholder="Ingrese su cargo..."
-              value={cargo}
-              onChange={(e) => setCargo(e.target.value)}
-              required
+              type="checkbox"
+              id="hasSuperior"
+              name="hasSuperior"
+              checked={hasSuperior}
+              onChange={(e) => setHasSuperior(e.target.checked)}
             />
           </div>
           <button type="submit" className="btn-submit">Crear</button>
@@ -182,5 +219,8 @@ const CrearEmpleado: React.FC = () => {
 };
 
 export default CrearEmpleado;
+
+
+
 
 

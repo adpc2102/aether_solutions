@@ -22,7 +22,7 @@ function App() {
                  <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('empleados'); }}>Empleados</a>
                     {openMenu === 'empleados' && (
                       <ul className="sub_menu_empleados">
-                        <li><Link to="#">Información</Link></li>
+                        <li><Link to="/ie">Información</Link></li>
                         <li><Link to="/ee">Editar Empleado</Link></li>
                         <li><Link to="/ae">Agregar Empleado</Link></li>
                       
@@ -36,8 +36,8 @@ function App() {
             <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
               <ul className="sub_menu_departamentos">
-                <li><Link to="#">Información</Link></li>
-                <li><a href="#">Editar Departamento</a></li>
+                <li><Link to="/id">Información</Link></li>
+                <li><Link to ="/ed">Editar Departamento</Link></li>
                 <li><Link to="/cd">Crear Departamento</Link></li>
                 
               </ul>

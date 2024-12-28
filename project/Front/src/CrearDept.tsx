@@ -29,7 +29,8 @@ function CrearDept() {
       // Enviar la solicitud para crear el nuevo departamento
       const response = await axios.post('http://127.0.0.1:5000/api/departments', {
         name: nombre,
-        description: descripcion
+        description: descripcion,
+        member : []
       });
 
       if (response.status === 201) {
@@ -42,7 +43,7 @@ function CrearDept() {
         setErrorMessage('Hubo un error al crear el departamento.');
       }
     } catch (error) {
-      setErrorMessage('Error al conectarse con la API.');
+      setErrorMessage('Hubo un error al crear el departamento.');
     }
   };
 
@@ -57,7 +58,7 @@ function CrearDept() {
               <a href="#" onClick={(e) => { e.preventDefault(); toggleMenu('empleados'); }}>Empleados</a>
               {openMenu === 'empleados' && (
                 <ul className="sub_menu_empleados">
-                  <li><Link to="#">Información</Link></li>
+                  <li><Link to="/ie">Información</Link></li>
                   <li><Link to="/ee">Editar Empleado</Link></li>
                   <li><Link to="/ae">Agregar Empleado</Link></li>
                 </ul>
@@ -67,8 +68,8 @@ function CrearDept() {
               <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
-                  <li><Link to="#">Información</Link></li>
-                  <li><a href="#">Editar Departamento</a></li>
+                  <li><Link to="/id">Información</Link></li>
+                  <li><a href="/ed">Editar Departamento</a></li>
                   <li><Link to="/cd">Crear Departamento</Link></li>
                 </ul>
               )}

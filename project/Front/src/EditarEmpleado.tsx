@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './EditarEmpleado.css'
 
@@ -8,6 +8,22 @@ function EditarEmpleado() {
   const [cedula, setCedula] = useState<string>('');
   const [empleado, setEmpleado] = useState<any | null>(null); // Para almacenar los datos del empleado
   const [errorMessage, setErrorMessage] = useState<string>(''); // Para mostrar errores
+  const [departments, setDepartments] = useState<any[]>([]); // Para almacenar los departamentos
+
+
+  useEffect(() => {
+    // Cargar los departamentos de la API al montar el componente
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/api/departments');
+        setDepartments(response.data);
+      } catch (error) {
+        setErrorMessage('Error al cargar los departamentos');
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   const toggleMenu = (menu: string) => {
     setOpenMenu(openMenu === menu ? null : menu);
@@ -47,7 +63,7 @@ function EditarEmpleado() {
         name: empleado.name,
         lastname: empleado.lastname,
         departamento: empleado.departamento,
-        cargo: empleado.cargo
+        
       });
 
       if (response.status === 200) {
@@ -61,11 +77,14 @@ function EditarEmpleado() {
   };
 
   // Funciones para manejar la edición de los campos
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
     const value = e.target.value;
     setEmpleado((prevEmpleado: any) => ({
       ...prevEmpleado,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -82,7 +101,7 @@ function EditarEmpleado() {
               <a href="#" onClick={() => toggleMenu('empleados')}>Empleados</a>
               {openMenu === 'empleados' && (
                 <ul className="sub_menu_empleados">
-                  <li><Link to="#">Información</Link></li>
+                  <li><Link to="/ie">Información</Link></li>
                   <li><Link to="/ee">Editar Empleado</Link></li>
                   <li><Link to="/ae">Agregar Empleado</Link></li>
                   
@@ -95,8 +114,8 @@ function EditarEmpleado() {
               <a href="#" onClick={() => toggleMenu('departamentos')}>Departamentos</a>
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
-                  <li><Link to="#">Información</Link></li>
-                  <li><Link to="#">Editar Departamento</Link></li>
+                  <li><Link to="/id">Información</Link></li>
+                  <li><Link to="/ed">Editar Departamento</Link></li>
                   <li><Link to="/cd">Crear Departamento</Link></li>
                   
                 </ul>
@@ -155,22 +174,19 @@ function EditarEmpleado() {
                 />
               </div>
               <div className="input">
-                <label htmlFor="departamento">Departamento</label>
-                <input
-                  type="text"
-                  id="departamento"
-                  value={empleado.departamento}
-                  onChange={(e) => handleChange(e, 'departamento')}
-                />
-              </div>
-              <div className="input">
-                <label htmlFor="cargo">Cargo</label>
-                <input
-                  type="text"
-                  id="cargo"
-                  value={empleado.cargo}
-                  onChange={(e) => handleChange(e, 'cargo')}
-                />
+              <label htmlFor="dept">Departamento</label>
+            <select
+              id="departamento"
+              value={empleado?.departamento || ''} // Muestra el departamento actual del empleado
+              onChange={(e) => handleChange(e, 'departamento')}
+            >
+              
+              {departments.map(department => (
+                <option key={department.id} value={department.name}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
               </div>
               <button type="submit" className="btn-submit">Actualizar</button>
             </form>
@@ -182,5 +198,3 @@ function EditarEmpleado() {
 }
 
 export default EditarEmpleado;
-
-

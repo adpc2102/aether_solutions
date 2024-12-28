@@ -3,6 +3,9 @@ import App from './App';
 import EditarEmpleado from './EditarEmpleado';
 import AgregarEmpleado from './AgregarEmpleado';
 import CrearDept from './CrearDept';
+import InfoE from './InfoEmpleado';
+import EditarDept from './EditarDept';
+import InfoDept from './InfoDept';
 // Asegúrate de tener este componente
 
 function RoutesApp() {
@@ -13,6 +16,10 @@ function RoutesApp() {
         <Route path="/ee" element={<EditarEmpleado />} />
         <Route path="/ae" element={<AgregarEmpleado />} />
         <Route path="/cd" element={<CrearDept />} />
+        <Route path="/ie" element={<InfoE/>} />
+        <Route path ="/ed" element={<EditarDept/>}/>
+        <Route path ="/id" element={<InfoDept/>}/>
+
       </Routes>
     </Router>
   );
