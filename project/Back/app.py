@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from flask_cors import CORS
@@ -207,7 +209,7 @@ def actualizar_empleado(cedula):
             return jsonify({"message": "No se realizaron cambios."}), 200
 
     except Exception as e:
-        print(f"Error durante la transacción: {e}")
+        
         return jsonify({"message": "Ocurrió un error al actualizar el empleado."}), 500
 
 
@@ -248,7 +250,6 @@ def get_departments():
             })
         return jsonify(result)
     except Exception as e:
-        print(f"Error al obtener departamentos: {e}")
         return jsonify({"error": "No se pudo obtener la lista de departamentos"}), 500
 
 @app.route('/api/departments/<string:department_name>/supervisor', methods=['GET'])
