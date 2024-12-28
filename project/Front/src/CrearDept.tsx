@@ -69,7 +69,7 @@ function CrearDept() {
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
                   <li><Link to="/id">Información</Link></li>
-                  <li><a href="/ed">Editar Departamento</a></li>
+                  <li><Link to="/ed">Editar Departamento</Link></li>
                   <li><Link to="/cd">Crear Departamento</Link></li>
                 </ul>
               )}
