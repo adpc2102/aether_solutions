@@ -9,7 +9,6 @@ const CrearEmpleado: React.FC = () => {
   const [lastname, setLastname] = useState('');
   const [dept, setDept] = useState('');
   const [departments, setDepartments] = useState<any[]>([]); // Para almacenar los departamentos
-  const [employees, setEmployees] = useState<any[]>([]); // Para almacenar los empleados
   const [hasSuperior, setHasSuperior] = useState(false); // Para saber si el empleado tiene supervisor
   const [errorMessage, setErrorMessage] = useState('');
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -19,8 +18,8 @@ const CrearEmpleado: React.FC = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/departments');
-        setDepartments(response.data);
-      } catch (error) {
+        setDepartments(response.data as any[]);
+              } catch (error) {
         setErrorMessage('Error al cargar los departamentos');
       }
     };
@@ -30,7 +29,6 @@ const CrearEmpleado: React.FC = () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/employees');
         console.log(response.data);  // Imprime la respuesta de la API
-        setEmployees(response.data);
       } catch (error) {
         setErrorMessage('Error al cargar los empleados');
       }
@@ -53,14 +51,13 @@ const CrearEmpleado: React.FC = () => {
     const checkSupervisorInDepartment = async (departmentName: string) => {
       try {
         const response = await axios.get(`http://127.0.0.1:5000/api/departments/${departmentName}/supervisor`);
-        return response.data.hasSupervisor;  // Devuelve true o false
+        return (response.data as { hasSupervisor: boolean }).hasSupervisor;
       } catch (error) {
         setErrorMessage('Error al verificar el supervisor en el departamento.');
         return false; // Si ocurre un error, devolvemos false por defecto
       }
     };
 
-    let superior = null;
 
     if (hasSuperior) {
       const hasSupervisor = await checkSupervisorInDepartment(dept);
@@ -69,7 +66,6 @@ const CrearEmpleado: React.FC = () => {
         return;
       } else {
         // Si no hay supervisor, asignamos al nuevo empleado como supervisor
-        superior = cedula;
       }
     }
     
@@ -96,13 +92,18 @@ const CrearEmpleado: React.FC = () => {
         setErrorMessage('Error al crear el empleado.');
       }
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.data.message) {
-          setErrorMessage(error.response.data.message);
+      // Verificación manual del tipo de error
+      if (error instanceof Error) {
+        // Si es un error estándar, verificamos si tiene una respuesta de Axios
+        if ((error as any).response) {
+          // Si la respuesta contiene un mensaje de error
+          setErrorMessage((error as any).response.data.message || 'Error desconocido en la respuesta.');
         } else {
-          setErrorMessage('Error de conexión con la API.');
+          // Otro tipo de error relacionado con la solicitud
+          setErrorMessage('Error desconocido en la solicitud.');
         }
       } else {
+        // Si no es un error estándar, mostramos un mensaje genérico
         setErrorMessage('Error desconocido.');
       }
     }

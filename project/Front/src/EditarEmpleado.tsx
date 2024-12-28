@@ -16,7 +16,7 @@ function EditarEmpleado() {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/departments');
-        setDepartments(response.data);
+        setDepartments(response.data as any[])
       } catch (error) {
         setErrorMessage('Error al cargar los departamentos');
       }

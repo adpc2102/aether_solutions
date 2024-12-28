@@ -20,7 +20,7 @@ const EditarDept: React.FC = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/api/departments')
       .then(response => {
-        setDepartments(response.data); // Guardamos los departamentos en el estado
+        setDepartments(response.data as any[]); // Forzamos el tipo a `any[]`
       })
       .catch(error => {
         console.error('Error fetching departments:', error);
@@ -36,12 +36,12 @@ const EditarDept: React.FC = () => {
       // Pasamos el nombre del departamento en lugar de su ID
       axios.get(`http://localhost:5000/api/employees?departmentName=${department.name}`)
         .then(response => {
-          setEmployees(response.data);
+          setEmployees(response.data as any[]);
 
           // Buscar el supervisor
           const supervisorCedula = department.supervisor;
           if (supervisorCedula) {
-            const supervisor = response.data.find((emp: any) => emp.cedula === supervisorCedula);
+            const supervisor = (response.data as any[]).find((emp: any) => emp.cedula === supervisorCedula);
             setSupervisor(supervisor || null);
           } else {
             setSupervisor(null);
