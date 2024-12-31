@@ -15,7 +15,7 @@ function EditarEmpleado() {
     // Cargar los departamentos de la API al montar el componente
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/departments');
+        const response = await axios.get('https://aether-solutions-13.onrender.com/api/departments');
         setDepartments(response.data as any[])
       } catch (error) {
         setErrorMessage('Error al cargar los departamentos');
@@ -41,7 +41,7 @@ function EditarEmpleado() {
 
     try {
       // Enviar la cédula para buscar el empleado en la API
-      const response = await axios.get(`http://127.0.0.1:5000/api/employees/${cedula}`);
+      const response = await axios.get(`https://aether-solutions-13.onrender.com/api/employees/${cedula}`);
 
       if (response.status === 200) {
         setEmpleado(response.data); // Almacenar los datos del empleado
@@ -59,7 +59,7 @@ function EditarEmpleado() {
 
     try {
       // Hacer una solicitud PUT para actualizar el empleado
-      const response = await axios.put(`http://127.0.0.1:5000/api/employees/${cedula}`, {
+      const response = await axios.put(`https://aether-solutions-13.onrender.com/api/employees/${cedula}`, {
         name: empleado.name,
         lastname: empleado.lastname,
         departamento: empleado.departamento,

@@ -17,7 +17,7 @@ const InfoDept: React.FC = () => {
 
   // Obtener todos los departamentos al montar el componente
   useEffect(() => {
-    axios.get('http://localhost:5000/api/departments')
+    axios.get('https://aether-solutions-13.onrender.com/api/departments')
       .then(response => {
         setDepartments(response.data as any[]) // Guardamos los departamentos en el estado
       })
@@ -33,7 +33,7 @@ const handleSelectDepartment = (deptId: string) => {
 
     if (department) {
       // Pasamos el nombre del departamento en lugar de su ID
-      axios.get(`http://localhost:5000/api/employees?departmentName=${department.name}`)
+      axios.get(`https://aether-solutions-13.onrender.com/api/employees?departmentName=${department.name}`)
         .then(response => {
           setEmployees(response.data as any[])
 

@@ -27,7 +27,7 @@ function CrearDept() {
 
     try {
       // Enviar la solicitud para crear el nuevo departamento
-      const response = await axios.post('http://127.0.0.1:5000/api/departments', {
+      const response = await axios.post('https://aether-solutions-13.onrender.com/api/departments', {
         name: nombre,
         description: descripcion,
         member : []

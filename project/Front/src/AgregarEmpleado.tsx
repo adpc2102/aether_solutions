@@ -17,7 +17,7 @@ const CrearEmpleado: React.FC = () => {
     // Cargar los departamentos de la API al montar el componente
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/departments');
+        const response = await axios.get('https://aether-solutions-13.onrender.com/api/departments');
         setDepartments(response.data as any[]);
               } catch (error) {
         setErrorMessage('Error al cargar los departamentos');
@@ -27,7 +27,7 @@ const CrearEmpleado: React.FC = () => {
     // Cargar los empleados de la API al montar el componente
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/employees');
+        const response = await axios.get('https://aether-solutions-13.onrender.com/api/employees');
         console.log(response.data);  // Imprime la respuesta de la API
       } catch (error) {
         setErrorMessage('Error al cargar los empleados');
@@ -50,7 +50,7 @@ const CrearEmpleado: React.FC = () => {
     // Verificar si el departamento ya tiene un supervisor
     const checkSupervisorInDepartment = async (departmentName: string) => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/api/departments/${departmentName}/supervisor`);
+        const response = await axios.get(`https://aether-solutions-13.onrender.com/api/departments/${departmentName}/supervisor`);
         return (response.data as { hasSupervisor: boolean }).hasSupervisor;
       } catch (error) {
         setErrorMessage('Error al verificar el supervisor en el departamento.');
@@ -72,7 +72,7 @@ const CrearEmpleado: React.FC = () => {
 
     try {
       // Enviar los datos a la API de Flask
-      const response = await axios.post('http://127.0.0.1:5000/api/employees', {
+      const response = await axios.post('https://aether-solutions-13.onrender.com/api/employees', {
         cedula: cedula,
         name: name,
         lastname: lastname,

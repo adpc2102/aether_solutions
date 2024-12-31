@@ -22,7 +22,7 @@ function InfoE() {
 
     try {
       // Enviar la cédula para buscar el empleado en la API
-      const response = await axios.get(`http://127.0.0.1:5000/api/employees/${cedula}`);
+      const response = await axios.get(`https://aether-solutions-13.onrender.com/api/employees/${cedula}`);
 
       if (response.status === 200) {
         setEmpleado(response.data); // Almacenar los datos del empleado

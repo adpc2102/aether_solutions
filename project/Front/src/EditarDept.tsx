@@ -18,7 +18,7 @@ const EditarDept: React.FC = () => {
 
   // Obtener todos los departamentos al montar el componente
   useEffect(() => {
-    axios.get('http://localhost:5000/api/departments')
+    axios.get('https://aether-solutions-13.onrender.com/api/departments')
       .then(response => {
         setDepartments(response.data as any[]); // Forzamos el tipo a `any[]`
       })
@@ -34,7 +34,7 @@ const EditarDept: React.FC = () => {
 
     if (department) {
       // Pasamos el nombre del departamento en lugar de su ID
-      axios.get(`http://localhost:5000/api/employees?departmentName=${department.name}`)
+      axios.get(`https://aether-solutions-13.onrender.com/api/employees?departmentName=${department.name}`)
         .then(response => {
           setEmployees(response.data as any[]);
 
@@ -59,7 +59,7 @@ const EditarDept: React.FC = () => {
   
     if (employeeToDelete) {
       // Eliminar al empleado de la base de datos
-      axios.delete(`http://localhost:5000/api/employees/${cedula}`)
+      axios.delete(`https://aether-solutions-13.onrender.com/api/employees/${cedula}`)
         .then(() => {
           // Actualizar la lista de empleados localmente
           setEmployees((prevEmployees) => prevEmployees.filter(emp => emp.cedula !== cedula));
@@ -67,7 +67,7 @@ const EditarDept: React.FC = () => {
           // Verificar si el empleado eliminado es el supervisor
           if (supervisor?.cedula === employeeToDelete.cedula) {
             // Si es el supervisor, actualizar el supervisor en la base de datos
-            axios.put(`http://localhost:5000/api/departments/${selectedDepartment.name}/supervisor`, {
+            axios.put(`https://aether-solutions-13.onrender.com/api/departments/${selectedDepartment.name}/supervisor`, {
               supervisor: null, // Eliminar el supervisor
             })
             .then(() => {
@@ -88,7 +88,7 @@ const EditarDept: React.FC = () => {
   // Cambiar supervisor
   const handleChangeSupervisor = () => {
     if (selectedDepartment && newSupervisor) {
-      axios.put(`http://localhost:5000/api/departments/${selectedDepartment.name}/supervisor`, {
+      axios.put(`https://aether-solutions-13.onrender.com/api/departments/${selectedDepartment.name}/supervisor`, {
         supervisor: newSupervisor.cedula
       })
         .then(() => {
@@ -131,7 +131,7 @@ const EditarDept: React.FC = () => {
               {openMenu === 'departamentos' && (
                 <ul className="sub_menu_departamentos">
                   <li><Link to="/id">Información</Link></li>
-                  <li><a href="/ed">Editar Departamento</a></li>
+                  <li><Link to="/ed">Editar Departamento</Link></li>
                   <li><Link to="/cd">Crear Departamento</Link></li>
                 </ul>
               )}
