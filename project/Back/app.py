@@ -18,6 +18,10 @@ db = client['aether_solutions']
 employee_collection = db['employee']
 department_collection = db['departments']  
 
+@app.route('/')
+def home():
+    return "API funcionando!!"
+
 # Función para verificar si el departamento existe
 def check_department(department_name):
     return department_collection.find_one({"name": department_name}) is not None
